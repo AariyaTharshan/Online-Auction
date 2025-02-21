@@ -9,7 +9,7 @@ function Navbar() {
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center" to="/">
           <i className="bi bi-hammer me-2"></i>
-          BidHub
+          AHub
         </Link>
         
         <button 
