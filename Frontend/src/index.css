@@ -1,0 +1,373 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --primary-color: #000000;
+  --secondary-color: #333333;
+  --text-muted: #6c757d;
+  --border-color: #e5e5e5;
+  --hover-bg: #f8f9fa;
+  --card-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #ffffff;
+  min-height: 100vh;
+  color: var(--primary-color);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.auction-card {
+  transition: all 0.3s ease;
+  border: none;
+  overflow: hidden;
+}
+
+.auction-card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.auction-card .btn {
+  margin-top: auto;
+}
+
+.auction-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.auction-card img {
+  height: 240px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.bid-button {
+  background-color: var(--secondary-color);
+  border: none;
+}
+
+.bid-button:hover {
+  background-color: #c0392b;
+}
+
+.navbar {
+  padding: 0.5rem 0;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-brand {
+  color: var(--primary-color) !important;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.navbar-brand i {
+  font-size: 1.4rem;
+}
+
+.navbar .nav-link {
+  color: var(--secondary-color) !important;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+}
+
+.navbar .nav-link:hover {
+  color: var(--primary-color) !important;
+}
+
+.navbar .btn {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.navbar .btn-primary {
+  background: var(--primary-color);
+  border: none;
+}
+
+.navbar .btn-primary:hover {
+  background: var(--secondary-color);
+}
+
+.navbar .dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+}
+
+.navbar .dropdown-item {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.navbar .dropdown-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
+}
+
+.navbar .dropdown-item i {
+  font-size: 1rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+@media (max-width: 991.98px) {
+  .navbar {
+    background-color: #ffffff !important;
+  }
+  
+  .navbar-toggler {
+    border: none;
+    padding: 0;
+  }
+  
+  .navbar-toggler:focus {
+    box-shadow: none;
+  }
+  
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+}
+
+.btn {
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.form-control {
+  border-color: var(--border-color);
+  padding: 0.6rem 0.75rem;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.input-group-text {
+  background-color: #ffffff;
+  border-color: var(--border-color);
+}
+
+.home-banner {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  margin-bottom: 3rem;
+}
+
+.profile-section {
+  margin-bottom: 2rem;
+}
+
+.auction-detail-image {
+  max-height: 400px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(44, 62, 80, 0.25);
+  border-color: var(--primary-color);
+}
+
+.input-group .form-control:focus {
+  border-color: #2c3e50;
+  box-shadow: none;
+}
+
+.input-group .input-group-text {
+  border-right: none;
+}
+
+.input-group .form-control {
+  border-left: none;
+}
+
+.input-group .form-control:focus + .input-group-text {
+  border-color: #2c3e50;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+.feature-icon {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: var(--primary-color);
+}
+
+.form-floating > .form-control:focus {
+  border-color: var(--primary-color);
+}
+
+.badge {
+  padding: 0.5em 1em;
+  font-weight: 500;
+}
+
+.badge.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  color: var(--secondary-color);
+}
+
+.dropdown-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--primary-color);
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
