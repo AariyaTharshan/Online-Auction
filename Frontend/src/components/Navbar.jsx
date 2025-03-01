@@ -5,7 +5,7 @@ function Navbar() {
   const isLoggedIn = false
 
   return (
-    <nav className="navbar navbar-expand-lg">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
       <div className="container">
         <Link className="navbar-brand d-flex align-items-center" to="/">
           <i className="bi bi-hammer me-2"></i>
@@ -17,6 +17,9 @@ function Navbar() {
           type="button" 
           data-bs-toggle="collapse" 
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -55,7 +58,7 @@ function Navbar() {
                 </Link>
                 <Link 
                   to="/signup" 
-                  className="btn btn-primary btn-sm px-3"
+                  className="btn btn-danger btn-sm px-3"
                 >
                   Sign Up
                 </Link>
@@ -64,7 +67,7 @@ function Navbar() {
               <>
                 <Link 
                   to="/create-auction" 
-                  className="btn btn-primary btn-sm px-3"
+                  className="btn btn-danger btn-sm px-3"
                 >
                   <i className="bi bi-plus-lg me-1"></i>
                   Create Auction
@@ -74,6 +77,7 @@ function Navbar() {
                     className="nav-link dropdown-toggle" 
                     type="button" 
                     data-bs-toggle="dropdown"
+                    aria-expanded="false"
                   >
                     <i className="bi bi-person-circle me-1"></i>
                     Account
