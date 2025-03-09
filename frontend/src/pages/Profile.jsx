@@ -20,7 +20,10 @@ const Profile = () => {
           api.get("/auctions")
         ]);
 
-        setUser(userResponse.data);
+        setUser({
+          ...userResponse.data,
+          role: userData.role
+        });
         
         // Calculate user statistics
         const userAuctions = auctionsResponse.data.filter(
@@ -58,19 +61,24 @@ const Profile = () => {
     <div className="container mt-5">
       <h2 className="text-center">My Profile</h2>
       {error && <div className="alert alert-danger">{error}</div>}
-      <div className="card shadow-sm p-4 mt-4">
+      <div className="card shadow">
         <div className="row">
-          <div className="col-md-4 text-center">
+          <div className="col-md-4 text-center p-4" style={{ borderRight: '1px solid #2a2a2a' }}>
             <img
               src={getImageUrl(user.profileImage)}
               alt="Profile"
               className="img-fluid rounded-circle mb-3"
-              style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+              style={{ 
+                width: '150px', 
+                height: '150px', 
+                objectFit: 'cover',
+                border: '3px solid var(--primary-color)'
+              }}
             />
             <h5>{user.name}</h5>
             <p>{user.email}</p>
             <div className="badge bg-primary mb-2">
-              {userStats.auctions > 0 ? 'Seller' : 'Buyer'}
+              {user.role === 'seller' ? 'Seller' : 'Buyer'}
             </div>
           </div>
           <div className="col-md-8">

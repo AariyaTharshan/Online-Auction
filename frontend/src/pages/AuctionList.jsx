@@ -57,8 +57,14 @@ const AuctionList = () => {
       <div className="row mt-4">
         {auctions.map((auction) => (
           <div className="col-md-4 mb-4" key={auction._id}>
-            <div className="card shadow-sm">
-              <div className={`card-status-badge ${auction.status === 'closed' ? 'bg-danger' : 'bg-success'}`} style={cardStatusBadgeStyle}>
+            <div className="card shadow">
+              <div 
+                className="card-status-badge" 
+                style={{
+                  ...cardStatusBadgeStyle,
+                  backgroundColor: auction.status === 'closed' ? 'var(--primary-color)' : 'var(--secondary-color)'
+                }}
+              >
                 {auction.status === 'closed' ? 'Closed' : 'Active'}
               </div>
               <img 

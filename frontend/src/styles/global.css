@@ -1,0 +1,107 @@
+:root {
+  --primary-color: #E50914; /* Netflix red */
+  --secondary-color: #0063e5; /* Disney+ blue */
+  --dark-bg: #141414;
+  --darker-bg: #0B0B0B;
+  --light-text: #FFFFFF;
+  --gray-text: #808080;
+  --card-bg: #181818;
+  --hover-bg: #232323;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--light-text);
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: none;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+  background-color: var(--hover-bg);
+}
+
+.card-header {
+  background-color: var(--darker-bg);
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #f40612;
+  border-color: #f40612;
+}
+
+.btn-outline-primary {
+  color: var(--light-text);
+  border-color: var(--light-text);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--light-text);
+  color: var(--dark-bg);
+}
+
+.navbar {
+  background-color: var(--darker-bg) !important;
+}
+
+.list-group-item {
+  background-color: var(--card-bg);
+  border-color: #2a2a2a;
+  color: var(--light-text);
+}
+
+.list-group-item:hover {
+  background-color: var(--hover-bg);
+}
+
+.text-muted {
+  color: var(--gray-text) !important;
+}
+
+.form-control {
+  background-color: #333;
+  border-color: #333;
+  color: var(--light-text);
+}
+
+.form-control:focus {
+  background-color: #454545;
+  border-color: var(--primary-color);
+  color: var(--light-text);
+  box-shadow: none;
+}
+
+.form-select {
+  background-color: #333;
+  border-color: #333;
+  color: var(--light-text);
+}
+
+.form-select:focus {
+  background-color: #454545;
+  border-color: var(--primary-color);
+  color: var(--light-text);
+  box-shadow: none;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, div {
+  color: var(--light-text);
+}
+
+.card-title, .card-text {
+  color: var(--light-text) !important;
+}
+
+.list-group-item {
+  color: var(--light-text) !important;
+}

@@ -7,6 +7,7 @@ const CreateAuction = () => {
   const [description, setDescription] = useState("");
   const [startingPrice, setStartingPrice] = useState("");
   const [image, setImage] = useState(null);
+  const [endDate, setEndDate] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
@@ -18,6 +19,13 @@ const CreateAuction = () => {
     }
   }, [user, navigate]);
 
+  // Calculate minimum date-time (current time + 1 hour)
+  const getMinDateTime = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    return now.toISOString().slice(0, 16);
+  };
+
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -25,7 +33,7 @@ const CreateAuction = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!title.trim() || !description.trim() || !startingPrice) {
+      if (!title.trim() || !description.trim() || !startingPrice || !endDate) {
         setError("Please fill in all required fields");
         return;
       }
@@ -35,17 +43,30 @@ const CreateAuction = () => {
         return;
       }
 
+      const endDateTime = new Date(endDate);
+      if (endDateTime <= new Date()) {
+        setError("End time must be in the future");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
       formData.append("startingPrice", startingPrice);
+      formData.append("endDate", endDateTime.toISOString());
       if (image) {
         formData.append("image", image);
       }
 
-      await api.post("/create-auction", formData, {
+      const response = await api.post("/create-auction", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
+      // Store the new auction in localStorage to show immediately in dashboard
+      const currentAuctions = JSON.parse(localStorage.getItem('myAuctions') || '[]');
+      currentAuctions.push(response.data.auction);
+      localStorage.setItem('myAuctions', JSON.stringify(currentAuctions));
+
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create auction");
@@ -54,8 +75,8 @@ const CreateAuction = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center">Create Auction</h2>
-      <div className="card shadow-sm p-4 mt-4">
+      <h2 className="text-center text-white">Create Auction</h2>
+      <div className="card shadow p-4 mt-4">
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -89,6 +110,20 @@ const CreateAuction = () => {
             />
           </div>
           <div className="mb-3">
+            <label className="form-label">End Date and Time</label>
+            <input
+              type="datetime-local"
+              className="form-control"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              min={getMinDateTime()}
+              required
+            />
+            <small className="text-muted">
+              Auction must end at least 1 hour from now
+            </small>
+          </div>
+          <div className="mb-3">
             <label className="form-label">Upload Image</label>
             <input
               type="file"
@@ -96,7 +131,9 @@ const CreateAuction = () => {
               onChange={handleImageChange}
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Create Auction</button>
+          <button type="submit" className="btn btn-primary w-100">
+            Create Auction
+          </button>
         </form>
       </div>
     </div>

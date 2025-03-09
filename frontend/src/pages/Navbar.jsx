@@ -12,9 +12,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-lg navbar-dark">
       <div className="container">
-        <Link className="navbar-brand" to="/">A-Hub</Link>
+        <Link className="navbar-brand" to="/" style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>
+          A-Hub
+        </Link>
         <button
           className="navbar-toggler"
           type="button"

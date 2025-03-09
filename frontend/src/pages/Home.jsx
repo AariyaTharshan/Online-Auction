@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div className="container mt-5">
-      <div className="row align-items-center">
+      <div className="row align-items-center" style={{ minHeight: '80vh' }}>
         <div className="col-md-6">
-          <h1 className="display-4 mb-4">Welcome to A-Hub</h1>
+          <h1 className="display-4 mb-4" style={{ fontWeight: 'bold' }}>
+            Welcome to <span style={{ color: 'var(--primary-color)' }}>A-Hub</span>
+          </h1>
           <p className="lead mb-4">
             Your premier destination for online auctions. Buy and sell items in a secure
             and user-friendly environment.

@@ -150,6 +150,7 @@ app.get("/user/:id", authenticate, async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
       profileImage: user.profileImage
     });
   } catch (err) {
@@ -197,21 +198,90 @@ app.put("/user/:id", authenticate, upload.single("profileImage"), async (req, re
   }
 });
 
+// Add a function to check and close expired auctions
+const checkAndCloseExpiredAuctions = async () => {
+  try {
+    const expiredAuctions = await Auction.find({
+      status: 'active',
+      endDate: { $lte: new Date() }
+    });
+
+    for (const auction of expiredAuctions) {
+      // Find the highest bid
+      const highestBid = auction.bids.reduce((prev, current) => 
+        (prev.amount > current.amount) ? prev : current, 
+        { amount: 0 }
+      );
+
+      // Update auction status
+      auction.status = 'closed';
+      auction.winner = highestBid.buyer || null;
+      await auction.save();
+    }
+
+    // Clean up old closed auctions
+    await cleanupClosedAuctions();
+  } catch (err) {
+    console.error('Error checking expired auctions:', err);
+  }
+};
+
+// Run the check every minute
+setInterval(checkAndCloseExpiredAuctions, 60000);
+
+// Add this function to handle auction cleanup
+const cleanupClosedAuctions = async () => {
+  try {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
+    const result = await Auction.deleteMany({
+      status: 'closed',
+      endDate: { $lt: oneHourAgo }
+    });
+    console.log(`Cleaned up ${result.deletedCount} closed auctions`);
+  } catch (err) {
+    console.error('Error cleaning up auctions:', err);
+  }
+};
+
+// Update create auction route to return full auction data
 app.post("/create-auction", authenticate, upload.single("image"), async (req, res) => {
-  const { title, description, startingPrice } = req.body;
-  const auction = new Auction({
-    title,
-    description,
-    startingPrice,
-    image: req.file ? `/uploads/${req.file.filename}` : "",
-    seller: req.user.id,
-  });
-  await auction.save();
-  res.json({ message: "Auction created successfully", auction });
+  try {
+    const { title, description, startingPrice, endDate } = req.body;
+    
+    // Validate end date
+    const endDateTime = new Date(endDate);
+    if (endDateTime <= new Date()) {
+      return res.status(400).json({ message: "End time must be in the future" });
+    }
+
+    const auction = new Auction({
+      title,
+      description,
+      startingPrice,
+      image: req.file ? `/uploads/${req.file.filename}` : "",
+      seller: req.user.id,
+      endDate: endDateTime
+    });
+    
+    await auction.save();
+
+    // Populate seller info before sending response
+    const populatedAuction = await Auction.findById(auction._id)
+      .populate('seller', 'name email');
+
+    res.json({ 
+      message: "Auction created successfully", 
+      auction: populatedAuction 
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error creating auction" });
+  }
 });
 
+// Update get auctions route to filter out expired auctions
 app.get("/auctions", async (req, res) => {
   try {
+    await checkAndCloseExpiredAuctions(); // Check for expired auctions
     const auctions = await Auction.find()
       .populate('seller', 'name email')
       .populate('winner', 'name email');
