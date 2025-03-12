@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../services/api";
+import api,{ API_URL } from "../services/api";
 
 const BidAuction = () => {
   const [bidAmount, setBidAmount] = useState("");
@@ -115,7 +115,7 @@ const BidAuction = () => {
         <div className="row">
           <div className="col-md-4 text-center">
             <img 
-              src={auction.image || "https://via.placeholder.com/150"} 
+              src={auction.image ? `${API_URL}${auction.image}` : "https://via.placeholder.com/300"}
               alt={auction.title} 
               className="img-fluid" 
             />

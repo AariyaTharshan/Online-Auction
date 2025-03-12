@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import api, { API_URL } from "../services/api";
 
 const Profile = () => {
@@ -17,25 +18,26 @@ const Profile = () => {
         }
         const [userResponse, auctionsResponse] = await Promise.all([
           api.get(`/user/${userData.id}`),
-          api.get("/auctions")
+          api.get("/auctions"),
         ]);
 
         setUser({
           ...userResponse.data,
-          role: userData.role
+          role: userData.role,
         });
-        
+
         // Calculate user statistics
         const userAuctions = auctionsResponse.data.filter(
-          auction => auction.seller._id === userData.id
+          (auction) => auction.seller._id === userData.id
         );
         const userBids = auctionsResponse.data.filter(
-          auction => auction.bids.some(bid => bid.buyer === userData.id)
+          (auction) =>
+            auction.bids.some((bid) => bid.buyer === userData.id)
         );
 
         setUserStats({
           auctions: userAuctions.length,
-          bids: userBids.length
+          bids: userBids.length,
         });
       } catch (err) {
         setError("Failed to load profile");
@@ -49,9 +51,7 @@ const Profile = () => {
 
   const getImageUrl = (profileImage) => {
     if (!profileImage) return "https://via.placeholder.com/150";
-    return profileImage.startsWith('http') 
-      ? profileImage 
-      : `${API_URL}${profileImage}`;
+    return profileImage.startsWith("http") ? profileImage : `${API_URL}${profileImage}`;
   };
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
@@ -63,22 +63,22 @@ const Profile = () => {
       {error && <div className="alert alert-danger">{error}</div>}
       <div className="card shadow">
         <div className="row">
-          <div className="col-md-4 text-center p-4" style={{ borderRight: '1px solid #2a2a2a' }}>
+          <div className="col-md-4 text-center p-4" style={{ borderRight: "1px solid #2a2a2a" }}>
             <img
               src={getImageUrl(user.profileImage)}
               alt="Profile"
               className="img-fluid rounded-circle mb-3"
-              style={{ 
-                width: '150px', 
-                height: '150px', 
-                objectFit: 'cover',
-                border: '3px solid var(--primary-color)'
+              style={{
+                width: "150px",
+                height: "150px",
+                objectFit: "cover",
+                border: "3px solid var(--primary-color)",
               }}
             />
             <h5>{user.name}</h5>
             <p>{user.email}</p>
             <div className="badge bg-primary mb-2">
-              {user.role === 'seller' ? 'Seller' : 'Buyer'}
+              {user.role === "seller" ? "Seller" : "Buyer"}
             </div>
           </div>
           <div className="col-md-8">
@@ -86,16 +86,12 @@ const Profile = () => {
             <ul className="list-group mb-4">
               <li className="list-group-item">Username: {user.name}</li>
               <li className="list-group-item">Email: {user.email}</li>
-              <li className="list-group-item">
-                Active Auctions Created: {userStats.auctions}
-              </li>
-              <li className="list-group-item">
-                Active Bids Placed: {userStats.bids}
-              </li>
+              <li className="list-group-item">Active Auctions Created: {userStats.auctions}</li>
+              <li className="list-group-item">Active Bids Placed: {userStats.bids}</li>
             </ul>
             <div className="d-flex justify-content-end gap-2">
-              <a href="/dashboard" className="btn btn-outline-primary">View Dashboard</a>
-              <a href="/edit-profile" className="btn btn-primary">Edit Profile</a>
+              <Link to="/dashboard" className="btn btn-outline-primary">View Dashboard</Link>
+              <Link to="/edit-profile" className="btn btn-primary">Edit Profile</Link>
             </div>
           </div>
         </div>

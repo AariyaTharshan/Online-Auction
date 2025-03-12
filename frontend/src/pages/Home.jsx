@@ -36,10 +36,10 @@ const Home = () => {
           <div className="card shadow-sm p-4 mt-4">
             <h3>Why Choose A-Hub?</h3>
             <ul className="list-unstyled">
-              <li className="mb-2">✓ Secure Transactions</li>
-              <li className="mb-2">✓ User-Friendly Interface</li>
-              <li className="mb-2">✓ Wide Range of Items</li>
-              <li className="mb-2">✓ Real-Time Bidding</li>
+              <li className="mb-2 text-primary">✓ Secure Transactions</li>
+              <li className="mb-2 text-primary">✓ User-Friendly Interface</li>
+              <li className="mb-2 text-primary">✓ Wide Range of Items</li>
+              <li className="mb-2 text-primary">✓ Real-Time Bidding</li>
             </ul>
           </div>
         </div>

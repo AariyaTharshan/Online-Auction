@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Add this before setting up multer
+
 if (!fs.existsSync('./uploads')) {
   fs.mkdirSync('./uploads');
 }
@@ -95,17 +95,17 @@ app.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       name,
       email,
       password: hashedPassword,
-      role: role // Explicitly set the role
+      role: role
     });
 
-    await user.save();
+  await user.save();
     console.log("Created user:", { id: user._id, role: user.role });
-    res.json({ message: "User registered successfully" });
+  res.json({ message: "User registered successfully" });
   } catch (err) {
     console.error("Signup error:", err);
     res.status(500).json({ message: "Error during registration" });
@@ -114,13 +114,13 @@ app.post("/signup", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-    
-    const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h" });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+  
+  const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ 
       message: "Login successful", 
       token, 
@@ -142,7 +142,7 @@ app.get("/user/:id", authenticate, async (req, res) => {
     if (!req.params.id) {
       return res.status(400).json({ message: "User ID is required" });
     }
-    const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -164,8 +164,8 @@ app.put("/user/:id", authenticate, upload.single("profileImage"), async (req, re
       return res.status(403).json({ message: "Not authorized to update this profile" });
     }
 
-    const { name, email, password } = req.body;
-    const updatedData = { name, email };
+  const { name, email, password } = req.body;
+  const updatedData = { name, email };
     
     if (password) {
       updatedData.password = await bcrypt.hash(password, 10);
@@ -198,7 +198,7 @@ app.put("/user/:id", authenticate, upload.single("profileImage"), async (req, re
   }
 });
 
-// Add a function to check and close expired auctions
+
 const checkAndCloseExpiredAuctions = async () => {
   try {
     const expiredAuctions = await Auction.find({
@@ -219,17 +219,16 @@ const checkAndCloseExpiredAuctions = async () => {
       await auction.save();
     }
 
-    // Clean up old closed auctions
     await cleanupClosedAuctions();
   } catch (err) {
     console.error('Error checking expired auctions:', err);
   }
 };
 
-// Run the check every minute
+
 setInterval(checkAndCloseExpiredAuctions, 60000);
 
-// Add this function to handle auction cleanup
+
 const cleanupClosedAuctions = async () => {
   try {
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
@@ -243,7 +242,6 @@ const cleanupClosedAuctions = async () => {
   }
 };
 
-// Update create auction route to return full auction data
 app.post("/create-auction", authenticate, upload.single("image"), async (req, res) => {
   try {
     const { title, description, startingPrice, endDate } = req.body;
@@ -254,18 +252,17 @@ app.post("/create-auction", authenticate, upload.single("image"), async (req, re
       return res.status(400).json({ message: "End time must be in the future" });
     }
 
-    const auction = new Auction({
-      title,
-      description,
-      startingPrice,
-      image: req.file ? `/uploads/${req.file.filename}` : "",
-      seller: req.user.id,
+  const auction = new Auction({
+    title,
+    description,
+    startingPrice,
+    image: req.file ? `/uploads/${req.file.filename}` : "",
+    seller: req.user.id,
       endDate: endDateTime
-    });
+  });
     
-    await auction.save();
+  await auction.save();
 
-    // Populate seller info before sending response
     const populatedAuction = await Auction.findById(auction._id)
       .populate('seller', 'name email');
 
@@ -278,16 +275,56 @@ app.post("/create-auction", authenticate, upload.single("image"), async (req, re
   }
 });
 
-// Update get auctions route to filter out expired auctions
+
 app.get("/auctions", async (req, res) => {
   try {
     await checkAndCloseExpiredAuctions(); // Check for expired auctions
     const auctions = await Auction.find()
       .populate('seller', 'name email')
       .populate('winner', 'name email');
-    res.json(auctions);
+  res.json(auctions);
   } catch (err) {
     res.status(500).json({ message: "Error fetching auctions" });
+  }
+});
+
+app.get("/my-auctions", authenticate, async (req, res) => {
+  try {
+    const auctions = await Auction.find({ seller: req.user.id }).populate('winner', 'name email');
+    res.json({ message: "Seller auctions fetched successfully", auctions });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching seller auctions" });
+  }
+});
+
+app.get("/sold-items", authenticate, async (req, res) => {
+  try {
+    const soldItems = await Auction.find({ seller: req.user.id, status: "closed", winner: { $ne: null } })
+      .populate('winner', 'name email');
+    res.json({ message: "Sold items fetched successfully", soldItems });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching sold items" });
+  }
+});
+ 
+app.get("/profile/stats", authenticate, async (req, res) => {
+  try {
+    const totalAuctions = await Auction.countDocuments({ seller: req.user.id });
+    const activeAuctions = await Auction.countDocuments({ seller: req.user.id, status: 'active' });
+    const closedAuctions = await Auction.countDocuments({ seller: req.user.id, status: 'closed' });
+    const totalBids = await Auction.aggregate([
+      { $unwind: "$bids" },
+      { $match: { "bids.buyer": mongoose.Types.ObjectId(req.user.id) } },
+      { $count: "totalBids" }
+    ]);
+    res.json({
+      totalAuctions,
+      activeAuctions,
+      closedAuctions,
+      totalBids: totalBids.length > 0 ? totalBids[0].totalBids : 0
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching profile stats" });
   }
 });
 
@@ -299,8 +336,8 @@ app.get("/auction/:id", async (req, res) => {
 
 app.post("/bid", authenticate, async (req, res) => {
   try {
-    const { auctionId, amount } = req.body;
-    const auction = await Auction.findById(auctionId);
+  const { auctionId, amount } = req.body;
+  const auction = await Auction.findById(auctionId);
     
     if (!auction) {
       return res.status(404).json({ message: "Auction not found" });
@@ -335,10 +372,10 @@ app.post("/bid", authenticate, async (req, res) => {
       return res.status(400).json({ message: "Bid must be higher than current highest bid" });
     }
 
-    auction.bids.push({ buyer: req.user.id, amount });
-    await auction.save();
+  auction.bids.push({ buyer: req.user.id, amount });
+  await auction.save();
     
-    res.json({ message: "Bid placed successfully", auction });
+  res.json({ message: "Bid placed successfully", auction });
   } catch (err) {
     res.status(500).json({ message: "Error placing bid" });
   }
